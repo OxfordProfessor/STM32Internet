@@ -1,0 +1,1 @@
+Error: Base resp abnormal, {"ret":41002,"errmsg":"appid missing","wx_req_id":"XHAbhITge-8-1646210925"}

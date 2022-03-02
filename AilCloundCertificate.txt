@@ -1,0 +1,10 @@
+{
+  "ProductKey": "gvrxJiLWkq4",
+  "DeviceName": "Stm32Internet",
+  "DeviceSecret": "3758872a01820a61a32d61bc9d3b845e"
+}
+{
+  "devSubTopic": "/gvrxJiLWkq4/Stm32Internet/user/get"	
+  "devPubTopic": "/gvrxJiLWkq4/Stm32Internet/user/update"
+}
+
