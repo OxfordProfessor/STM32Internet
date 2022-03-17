@@ -1,1 +1,0 @@
-"D:\微信web开发者工具\cli.bat" cloud functions deploy --e cloud1-6g335jyua9a085e1 --n quickstartFunctions --r --project "D:\Project\重点协作项目\物联网app开发\WeiXinMicro-project" --report_first --report
