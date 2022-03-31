@@ -39,7 +39,13 @@ var mqtt = require('aliyun-mqtt/mqtt.min.js') //根据自己存放的路径修�
 const crypto = require('aliyun-mqtt/hex_hmac_sha1.js'); //根据自己存放的路径修改
 
 export default {
+  data(){
+    return{
+      ph: 0
+    };
+  },
   created: function(){
+    var that = this
   	//注意：这里在程序运行后会直接进行连接，如果你要真机调试，记得关掉模拟器或者使用一个按钮来控制连接，以避免模拟器和真机同时进行连接导致两边都频繁断线重连！
     const deviceConfig = {
       productKey: "gvrxJiLWkq4",
@@ -78,16 +84,15 @@ export default {
 	//接收消息监听
     client.on('message', function (topic, message) {
       // message is Buffer
+      let dataFromDev = {}
       let msg = message.toString();
       console.log('收到消息：'+msg);
      //关闭连接 client.end()
+      dataFromDev = JSON.parse(message)
+      console.log(dataFromDev)
+      that.ph = dataFromDev.ph
     })
-  },
-  data(){
-    return{
-      ph: 7
-    };
-  },
+  }
 };
 </script>
 
