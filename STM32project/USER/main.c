@@ -192,7 +192,7 @@ void net_task(void *pvParameters)
 			//读出温度数据
 			date = (int)(DS18B20_Get_Temp()*0.1);
 			//向缓冲区PUB_BUF1中写入温度数据
-			sprintf(PUB_BUF1,"{\"params\":{\"Temp\":%d},\"method\":\"thing.event.property.post\"}", date);    
+			sprintf(PUB_BUF1,"{\"params\":{\"Temp\":%d},\"method\":\"thing.event.property.post\"}", date);    //发布数据格式
 			//向服务器发布缓冲区PUB_BUF1信息，即发布湿度、温度值
 			OneNet_Publish("/sys/gvrxJiLWkq4/Stm32Internet/thing/event/property/post", PUB_BUF1); 
 			timeCount_date = 0;

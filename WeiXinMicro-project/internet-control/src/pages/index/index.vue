@@ -44,6 +44,9 @@ export default {
       ph: 0
     };
   },
+  methods:{
+
+  },
   created: function(){
     var that = this
   	//注意：这里在程序运行后会直接进行连接，如果你要真机调试，记得关掉模拟器或者使用一个按钮来控制连接，以避免模拟器和真机同时进行连接导致两边都频繁断线重连！
@@ -78,6 +81,11 @@ export default {
       client.subscribe('/gvrxJiLWkq4/Stm32Internet/user/get', function (err) {
         if (!err) {
            console.log('订阅成功！');
+        }
+      })
+      client.publish('/sys/gvrxJiLWkq4/Stm32Internet/thing/event/property/post','{"params":{"ComeBack":1},"method":"thing.event.property.post"}',function(err){
+        if(!err){
+          console.log("成功下发命令——返回")
         }
       })
     })
