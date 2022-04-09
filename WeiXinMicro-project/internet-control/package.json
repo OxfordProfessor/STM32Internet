@@ -23,7 +23,9 @@
     "build": "node build/build.js wx"
   },
   "dependencies": {
+    "echarts": "^5.3.2",
     "mpvue": "^2.0.0",
+    "mpvue-echarts": "^0.3.2",
     "mqtt": "^3.0.0",
     "vue-router": "^3.2.0"
   },
