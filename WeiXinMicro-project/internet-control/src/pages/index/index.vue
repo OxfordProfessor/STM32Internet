@@ -58,6 +58,7 @@ const crypto = require('aliyun-mqtt/hex_hmac_sha1.js'); //根据自己存放的�
 import * as echarts from 'chart/echarts.min.js'
 //import * as echarts from 'chart/echarts.simple.min.js'
 import mpvueEcharts from 'chart/echarts.vue'
+import global_ from 'Global/Global'
 //import mpvueEcharts from 'mpvue-echarts'
 //import * as echarts from 'chart/echarts.js'
 
@@ -67,10 +68,16 @@ export default {
     return{
       ph: 7.4,
       tds: 396.8,
+      voltage: 0,
+      storage: 0,
       echarts,
+      Comeback: 0,
       resdata: [8.7, 6.2, 6.8, 7.3, 9.2, 5.6, 8.3],  //定义一个数组，用来动态传递图表数据
       tdsdata: [301.45, 342.5, 245.3, 287.9, 303.2, 402.5, 305.3]
     }
+  },
+  created(){
+
   },
   mounted () {
 
@@ -212,35 +219,19 @@ export default {
 	}
   },
   components: {
-    mpvueEcharts
+    mpvueEcharts,
   },
   created: function(){
     var that = this
-  	//注意：这里在程序运行后会直接进行连接，如果你要真机调试，记得关掉模拟器或者使用一个按钮来控制连接，以避免模拟器和真机同时进行连接导致两边都频繁断线重连！
-    const deviceConfig = {
-      productKey: "gvrxJiLWkq4",
-      deviceName: "Stm32Internet",
-      deviceSecret: "3758872a01820a61a32d61bc9d3b845e",
-      regionId: "cn-shanghai"//根据自己的区域替换
-    };
-    const params = {
-      productKey: deviceConfig.productKey,
-      deviceName: deviceConfig.deviceName,
-      timestamp: Date.now(),
-      clientId: Math.random().toString(36).substr(2),
-    }
-    //CONNECT参数
     const options = {
       keepalive: 60, //60s
       clean: true, //cleanSession不保持持久会话
       protocolVersion: 4 //MQTT v3.1.1
     }
-    //1.生成clientId，username，password
+	  //接收消息监听，解析数值
     options.password = `5ea42da99af0edcf2f32c8a4db389abbad3596dc`;
     options.clientId = `FESA234FBDS24|securemode=3,signmethod=hmacsha1,timestamp=789|`;
     options.username = `Stm32Internet&gvrxJiLWkq4`;
-    console.log(options)
-    //替换productKey为你自己的产品的（注意这里是wxs，不是wss，否则你可能会碰到ws不是构造函数的错误）
     const client = mqtt.connect('wxs://gvrxJiLWkq4.iot-as-mqtt.cn-shanghai.aliyuncs.com',options)
     client.on('connect', function () {
       console.log('连接服务器成功')
@@ -250,25 +241,33 @@ export default {
            console.log('订阅成功！');
         }
       })
-      client.publish('/sys/gvrxJiLWkq4/Stm32Internet/thing/event/property/post','{"params":{"ComeBack":1},"method":"thing.event.property.post"}',function(err){
-        if(!err){
-          console.log("成功下发命令——返回")
-        }
-      })
     })
-	//接收消息监听
-    client.on('message', function (topic, message) {
+    client.on('message', function (topic, message) {    //解析消息命令，原始消息格式{"storage":8}解析为{storage: 8}
       // message is Buffer
+      var that = this
       let dataFromDev = {}
       let msg = message.toString();
       console.log('收到消息：'+msg);
      //关闭连接 client.end()
       dataFromDev = JSON.parse(message)
       console.log(dataFromDev)
-      that.ph = dataFromDev.ph
+      that.ph = dataFromDev.ph      //ph值更新
+      that.tds = dataFromDev.tds    //tds值更新
+      that.storage = dataFromDev.storage 
+      that.voltage = dataFromDev.voltage
+      global_.storage = that.storage 
+      global_.voltage = that.voltage
+      that.Comeback = global_.Comeback    //获得全局变量，更改Comeback的值
+      if(that.Comeback == 1){     // 如果Comeback的值为1，才发送返回消息
+        client.publish('/sys/gvrxJiLWkq4/Stm32Internet/thing/event/property/post','{"params":{"ComeBack":1},"method":"thing.event.property.post"}',function(err){
+          if(!err){
+            console.log("成功下发命令——返回")
+          }
+        })
+      }
     })
   },
-  onShow () {
+  onLoad: function(options){
 
   }
 } 

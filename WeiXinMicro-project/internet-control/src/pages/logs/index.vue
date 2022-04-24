@@ -1,61 +1,116 @@
 <template>
-  <div>
-      <swiper v-if="imgUrls.length > 0" indidator-dots="imgUrls.length > 1" >
-      <block v-for="(item, index) in imgUrls" :key="index" >
-        <swiper-item>
-          <image :src="item" mode="scaleToFill"></image>
-        </swiper-item>
-      </block>
-    </swiper>
-
-    <ul class="container log-list">
-      <li v-for="(log, index) in logs" :class="{ red: aa }" :key="index" class="log-item">
-        <card :text="(index + 1) + ' . ' + log"></card>
-      </li>
-    </ul>
-  </div>
+  <view class="control">
+    <view class="text-voltage">
+      <view class="data-title">当前设备剩余电量</view>
+      <view class="data-value">{{voltage}}%</view>
+    </view>
+    <view class="text-storage">
+      <view class="data-title">当前设备剩余容量</view>
+      <view class="data-value">{{storage}}%</view>      
+    </view>
+    <view class="Condition-display">
+    <view :wx:if="voltage <= 20 || storage <= 20">
+      <view class="data-title">警告!</view>
+      <view :wx:if="voltage <= 20 ">
+        <view class="voltage-information">您的电量即将耗尽，建议您尽快靠岸</view>
+      </view>
+      <view :wx:if="storage <= 20">
+        <view class="storage-information">您的垃圾清理机器人垃圾仓已满，建议您尽快靠岸、并清理垃圾仓</view>
+      </view>
+    </view>
+    </view>
+    <button class='btn1' @tap="BankReturn">返回岸边</button>
+  </view>
 </template>
 
 <script>
-import { formatTime } from '@/utils/index'
-import card from '@/components/card'
+var mqtt = require('aliyun-mqtt/mqtt.min.js') //根据自己存放的路径修改
+const crypto = require('aliyun-mqtt/hex_hmac_sha1.js'); //根据自己存放的路径修改
+import global_ from 'Global/Global'
 
 export default {
-  components: {
-    card
-  },
-
   data () {
     return {
-      logs: [],
-      imgUrls: [
-        'http://mss.sankuai.com/v1/mss_51a7233366a4427fa6132a6ce72dbe54/newsPicture/05558951-de60-49fb-b674-dd906c8897a6',
-        'http://mss.sankuai.com/v1/mss_51a7233366a4427fa6132a6ce72dbe54/coursePicture/0fbcfdf7-0040-4692-8f84-78bb21f3395d',
-        'http://mss.sankuai.com/v1/mss_51a7233366a4427fa6132a6ce72dbe54/management-school-picture/7683b32e-4e44-4b2f-9c03-c21f34320870'
-      ]
+      storage: 0,
+      voltage: 0,
+      direction: 0,              //虚拟摇杆方位角，1表示第一象限，2表示第二象限，3表示第三象限，4表示第四象限，0位于居中位置
+      Comeback: 0,               //返回岸边标志位，1表示返回岸边
     }
   },
+  components: {
 
-  created () {
-    let logs
-    if (mpvuePlatform === 'my') {
-      logs = mpvue.getStorageSync({key: 'logs'}).data || []
-    } else {
-      logs = mpvue.getStorageSync('logs') || []
+  },
+  mounted(){
+
+  },
+  methods:{
+    BankReturn: function(event) {     //按键触发事件，将全局变量Comebakc置为1
+      var that = this
+      global_.Comeback = 1
+      console.log('更改数值');
     }
-    this.logs = logs.map(log => formatTime(new Date(log)))
+  },
+  created () {
+    
+  },
+  onLoad: function(options){    //接收页面传参
+    var that = this
+    that.storage = global_.storage
+  },
+  created: function(){
+
   }
 }
+
 </script>
 
-<style>
-.log-list {
-  display: flex;
-  flex-direction: column;
-  padding: 40rpx;
-}
-
-.log-item {
-  margin: 10rpx;
+<style lang="scss" scoped>
+.control{
+  .text-voltage{
+    padding: 0px 30px;
+    margin-top: 15px;
+    color: #7f7f7f;
+    .data-value{
+      padding: 15px 0px;
+      font-size: 26px;
+      color: #f9a13d;
+    }
+  }
+  .text-storage{
+    padding: 0px 30px;
+    margin-top: 15px;
+    color: #7f7f7f;
+    .data-value{
+      padding: 15px 0px;
+      font-size: 26px;
+      color: #3d7ef9;
+    }
+  }
+  .Condition-display{
+    padding: 0px 30px;
+    margin-top: 26px;
+    color: #7f7f7f;
+    .voltage-information{
+      padding: 15px 0px;
+      font-size: 15px;
+      color: #eb0b0b;
+    }
+    .storage-information{
+      padding: 15px 0px;
+      font-size: 15px;
+      color: #f30b0b;
+    }
+  }
+  .btn1{
+    width:80%;
+    margin-top:130rpx;
+    background-color: rgb(106, 0, 95);
+    color: white;
+    border-radius: 98rpx;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
 }
 </style>
