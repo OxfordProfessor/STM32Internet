@@ -28,10 +28,17 @@ Project File Date:  02/16/2022
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\MDK5\ARM\ARMCC\Bin'
 Build target 'FreeRTOS'
 compiling main.c...
+main.c(185): warning:  #177-D: variable "tds"  was declared but never referenced
+  	int temp,tds,storage,voltage;
+main.c(185): warning:  #177-D: variable "storage"  was declared but never referenced
+  	int temp,tds,storage,voltage;
+main.c(185): warning:  #177-D: variable "voltage"  was declared but never referenced
+  	int temp,tds,storage,voltage;
+main.c: 3 warnings, 0 errors
 linking...
-Program Size: Code=142346 RO-data=26698 RW-data=900 ZI-data=1058176  
+Program Size: Code=142306 RO-data=26770 RW-data=900 ZI-data=1058176  
 FromELF: creating hex file...
-"..\OBJ\Template.axf" - 0 Error(s), 0 Warning(s).
+"..\OBJ\Template.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   .\RTE\_FreeRTOS

@@ -40,7 +40,6 @@
 var mqtt = require('aliyun-mqtt/mqtt.min.js') //根据自己存放的路径修改
 const crypto = require('aliyun-mqtt/hex_hmac_sha1.js'); //根据自己存放的路径修改
 import global_ from 'Global/Global'
-import Vue from 'vue'
 
 export default {
   props: {
@@ -85,14 +84,14 @@ export default {
     onBanScroll: function(e) {
       return;
     },
-          // 按住摇杆的时候定时触发
-                  onMoveStart: function(e) {
+      // 按住摇杆的时候定时触发
+      onMoveStart: function(e) {
         let that = this;
         that.timer = setInterval(function() {
           that.$emit("joystickTouchStart", that.direction);
         }, 500);  // 如果时间想要自定义再自己改改好了
       },
-            // 摇杆移动事件
+      // 摇杆移动事件
       onJoystickMove: function(e) {
         const {
           clientX,
@@ -176,6 +175,7 @@ export default {
   onLoad: function(options){    //接收页面传参
     var that = this
     that.storage = global_.storage
+    that.voltage = global_.voltage
   },
     
 }

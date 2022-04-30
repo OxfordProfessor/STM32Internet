@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define ESP8266_WIFI_INFO		"AT+CWJAP=\"XiaomiSpark\",\"zw1234567890.\"\r\n"   //wifi账号密码
+#define ESP8266_WIFI_INFO		"AT+CWJAP=\"imraspberry\",\"em197128163110\"\r\n"   //wifi账号密码
 
 #define ESP8266_ONENET_INFO		"AT+CIPSTART=\"TCP\",\"gvrxJiLWkq4.iot-as-mqtt.cn-shanghai.aliyuncs.com\",1883\r\n"  //tcp服务器的IP地址和端口号
 

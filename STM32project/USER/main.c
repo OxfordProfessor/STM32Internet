@@ -182,7 +182,8 @@ void led0_task(void *p_arg)
 //物联网控制函数，向服务器发送数据、接收互联网数据控制外设
 void net_task(void *pvParameters) 
 {
-	int date;
+	int temp,tds,storage,voltage;
+	float ph;
 	while(1)
 	{
 		timeCount++;
@@ -190,9 +191,9 @@ void net_task(void *pvParameters)
 		if(timeCount_date % 500 == 0)   //1000ms / 25 = 10 一秒执行一次（发布温度传感器数据）
 		{
 			//读出温度数据
-			date = (int)(DS18B20_Get_Temp()*0.1);
+			temp = (int)(DS18B20_Get_Temp()*0.1);
 			//向缓冲区PUB_BUF1中写入温度数据
-			sprintf(PUB_BUF1,"{\"params\":{\"Temp\":%d},\"method\":\"thing.event.property.post\"}", date);    //发布数据格式
+			sprintf(PUB_BUF1,"{\"params\":{\"Temp\":%d,\"ph\":%lf},\"method\":\"thing.event.property.post\"}", temp,ph);    //发布数据格式
 			//向服务器发布缓冲区PUB_BUF1信息，即发布湿度、温度值
 			OneNet_Publish("/sys/gvrxJiLWkq4/Stm32Internet/thing/event/property/post", PUB_BUF1); 
 			timeCount_date = 0;

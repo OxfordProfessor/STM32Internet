@@ -66,8 +66,8 @@ import global_ from 'Global/Global'
 export default {
   data(){
     return{
-      ph: 7.4,
-      tds: 396.8,
+      ph: 0,
+      tds: 0,
       voltage: 0,
       storage: 0,
       echarts,
@@ -75,12 +75,6 @@ export default {
       resdata: [8.7, 6.2, 6.8, 7.3, 9.2, 5.6, 8.3],  //定义一个数组，用来动态传递图表数据
       tdsdata: [301.45, 342.5, 245.3, 287.9, 303.2, 402.5, 305.3]
     }
-  },
-  created(){
-
-  },
-  mounted () {
-
   },
   methods:{
     initChart (canvas, width, height) {
@@ -221,7 +215,10 @@ export default {
   components: {
     mpvueEcharts,
   },
-  created: function(){
+  onShow(){
+
+  },
+  created:function(){
     var that = this
     const options = {
       keepalive: 60, //60s
@@ -229,14 +226,14 @@ export default {
       protocolVersion: 4 //MQTT v3.1.1
     }
 	  //接收消息监听，解析数值
-    options.password = `5ea42da99af0edcf2f32c8a4db389abbad3596dc`;
+    options.password = `d4b200a3ff1c93814d137d3a9cbe44cfb7ce8ce3`;
     options.clientId = `FESA234FBDS24|securemode=3,signmethod=hmacsha1,timestamp=789|`;
-    options.username = `Stm32Internet&gvrxJiLWkq4`;
-    const client = mqtt.connect('wxs://gvrxJiLWkq4.iot-as-mqtt.cn-shanghai.aliyuncs.com',options)
+    options.username = `SVCC&gvrxVSKqKlH`;
+    const client = mqtt.connect('wxs://gvrxVSKqKlH.iot-as-mqtt.cn-shanghai.aliyuncs.com',options)
     client.on('connect', function () {
       console.log('连接服务器成功')
       //注意：订阅主题，替换productKey和deviceName(这里的主题可能会不一样，具体请查看控制台-产品详情-Topic 类列表下的可订阅主题)，并且确保改主题的权限设置为可订阅
-      client.subscribe('/gvrxJiLWkq4/Stm32Internet/user/get', function (err) {
+      client.subscribe('/gvrxVSKqKlH/SVCC/user/get', function (err) {
         if (!err) {
            console.log('订阅成功！');
         }
@@ -244,31 +241,31 @@ export default {
     })
     client.on('message', function (topic, message) {    //解析消息命令，原始消息格式{"storage":8}解析为{storage: 8}
       // message is Buffer
-      var that = this
       let dataFromDev = {}
       let msg = message.toString();
       console.log('收到消息：'+msg);
      //关闭连接 client.end()
       dataFromDev = JSON.parse(message)
       console.log(dataFromDev)
-      that.ph = dataFromDev.ph      //ph值更新
-      that.tds = dataFromDev.tds    //tds值更新
+      global_.ph = dataFromDev.ph      //ph值更新
+      global_.tds = dataFromDev.tds    //tds值更新
+      that.ph = global_.ph
+      that.tds = global_.tds
       that.storage = dataFromDev.storage 
       that.voltage = dataFromDev.voltage
       global_.storage = that.storage 
       global_.voltage = that.voltage
       that.Comeback = global_.Comeback    //获得全局变量，更改Comeback的值
+      that.storage = global_.storage    //获得全局变量，更改Comeback的值
       if(that.Comeback == 1){     // 如果Comeback的值为1，才发送返回消息
-        client.publish('/sys/gvrxJiLWkq4/Stm32Internet/thing/event/property/post','{"params":{"ComeBack":1},"method":"thing.event.property.post"}',function(err){
+        client.publish('/sys/gvrxVSKqKlH/SVCC/thing/event/property/post','{"params":{"Comeback":1},"method":"thing.event.property.post"}',function(err){
           if(!err){
             console.log("成功下发命令——返回")
+            that.Comeback = 0
           }
         })
       }
     })
-  },
-  onLoad: function(options){
-
   }
 } 
 </script>
